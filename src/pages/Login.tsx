@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { AtSign, KeyRound, LogIn, Linkedin } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -14,32 +15,50 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // This is a mock login - in a real app, this would call an API
-    setTimeout(() => {
-      setIsLoading(false);
-      
-      // Simple validation
-      if (!email || !password) {
-        toast({
-          title: "Error",
-          description: "Please enter both email and password",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Mock successful login
+    // Simple validation
+    if (!email || !password) {
       toast({
-        title: "Success",
-        description: "You have successfully logged in!",
+        title: "Error",
+        description: "Please enter both email and password",
+        variant: "destructive",
       });
+      setIsLoading(false);
+      return;
+    }
+
+    // Example instructional hint
+    if (email === "muser" && password === "muser") {
+      setEmail("muser@example.com");
+      toast({
+        title: "Info",
+        description: "Using 'muser@example.com' with password 'muser'",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    if (email === "admin" && password === "admin") {
+      setEmail("admin@example.com");
+      toast({
+        title: "Info",
+        description: "Using 'admin@example.com' with password 'admin'",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    const success = await login(email, password);
+    
+    setIsLoading(false);
+    if (success) {
       navigate("/");
-    }, 1500);
+    }
   };
 
   return (
@@ -115,6 +134,32 @@ const Login = () => {
                 )}
               </Button>
             </form>
+            
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <h4 className="text-sm text-center mb-2 text-gray-500">Demo Accounts</h4>
+              <div className="grid grid-cols-2 gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    setEmail("muser@example.com");
+                    setPassword("muser");
+                  }}
+                >
+                  Use Regular User
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    setEmail("admin@example.com");
+                    setPassword("admin");
+                  }}
+                >
+                  Use Admin
+                </Button>
+              </div>
+            </div>
           </CardContent>
           <CardFooter className="flex justify-center">
             <p className="text-sm text-gray-600">

@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { BellIcon, MessageSquare, Search, Users, Home, Grid2X2, LogIn, UserPlus } from "lucide-react";
+import { BellIcon, MessageSquare, Search, Users, Home, Grid2X2, LogIn, UserPlus, Shield } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
@@ -10,10 +10,12 @@ import FeedPost from "@/components/FeedPost";
 import ProfileCard from "@/components/ProfileCard";
 import NetworkCard from "@/components/NetworkCard";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { currentUser, logout } = useAuth();
+  const isLoggedIn = !!currentUser;
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -67,14 +69,46 @@ const Index = () => {
                       <span className="text-xs mt-1">Notices</span>
                     </Button>
                   </li>
-                  <li>
-                    <Button variant="ghost" size="icon" className="flex flex-col items-center">
+                  {currentUser?.role === 'admin' && (
+                    <li>
+                      <Link to="/admin">
+                        <Button variant="ghost" size="icon" className="flex flex-col items-center">
+                          <Shield className="h-6 w-6 text-blue-600" />
+                          <span className="text-xs mt-1">Admin</span>
+                        </Button>
+                      </Link>
+                    </li>
+                  )}
+                  <li className="relative group">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="flex flex-col items-center"
+                      onClick={() => {}}
+                    >
                       <Avatar className="h-8 w-8">
                         <AvatarImage src="https://github.com/shadcn.png" alt="User" />
-                        <AvatarFallback>CN</AvatarFallback>
+                        <AvatarFallback>{currentUser?.name?.substring(0, 2) || 'U'}</AvatarFallback>
                       </Avatar>
                       <span className="text-xs mt-1">You</span>
                     </Button>
+                    <div className="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                      <div className="p-2">
+                        <div className="px-4 py-2 text-sm text-gray-700">
+                          <div className="font-medium">{currentUser?.name}</div>
+                          <div className="text-xs text-gray-500">{currentUser?.email}</div>
+                          <div className="text-xs mt-1 font-medium text-blue-600 capitalize">{currentUser?.role}</div>
+                        </div>
+                        <Separator className="my-1" />
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start text-sm" 
+                          onClick={logout}
+                        >
+                          Sign Out
+                        </Button>
+                      </div>
+                    </div>
                   </li>
                 </>
               ) : (
@@ -113,7 +147,7 @@ const Index = () => {
               <div className="flex gap-3">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src="https://github.com/shadcn.png" alt="User" />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarFallback>{currentUser?.name?.substring(0, 2) || 'U'}</AvatarFallback>
                 </Avatar>
                 <Button 
                   variant="outline" 
