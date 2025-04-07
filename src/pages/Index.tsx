@@ -1,6 +1,5 @@
-
 import { Button } from "@/components/ui/button";
-import { BellIcon, MessageSquare, Search, Users, Home, Grid2X2 } from "lucide-react";
+import { BellIcon, MessageSquare, Search, Users, Home, Grid2X2, LogIn, UserPlus } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
@@ -9,13 +8,14 @@ import { useState } from "react";
 import FeedPost from "@/components/FeedPost";
 import ProfileCard from "@/components/ProfileCard";
 import NetworkCard from "@/components/NetworkCard";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
     <div className="bg-gray-100 min-h-screen">
-      {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -33,61 +33,80 @@ const Index = () => {
           
           <nav>
             <ul className="flex items-center space-x-6">
-              <li className="hidden md:block">
-                <Button variant="ghost" size="icon" className="flex flex-col items-center">
-                  <Home className="h-6 w-6" />
-                  <span className="text-xs mt-1">Home</span>
-                </Button>
-              </li>
-              <li className="hidden md:block">
-                <Button variant="ghost" size="icon" className="flex flex-col items-center">
-                  <Users className="h-6 w-6" />
-                  <span className="text-xs mt-1">Network</span>
-                </Button>
-              </li>
-              <li className="hidden md:block">
-                <Button variant="ghost" size="icon" className="flex flex-col items-center">
-                  <Grid2X2 className="h-6 w-6" />
-                  <span className="text-xs mt-1">Jobs</span>
-                </Button>
-              </li>
-              <li>
-                <Button variant="ghost" size="icon" className="flex flex-col items-center">
-                  <MessageSquare className="h-6 w-6" />
-                  <span className="text-xs mt-1">Messages</span>
-                </Button>
-              </li>
-              <li>
-                <Button variant="ghost" size="icon" className="flex flex-col items-center relative">
-                  <BellIcon className="h-6 w-6" />
-                  <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
-                  <span className="text-xs mt-1">Notices</span>
-                </Button>
-              </li>
-              <li>
-                <Button variant="ghost" size="icon" className="flex flex-col items-center">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="User" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <span className="text-xs mt-1">You</span>
-                </Button>
-              </li>
+              {isLoggedIn ? (
+                <>
+                  <li className="hidden md:block">
+                    <Button variant="ghost" size="icon" className="flex flex-col items-center">
+                      <Home className="h-6 w-6" />
+                      <span className="text-xs mt-1">Home</span>
+                    </Button>
+                  </li>
+                  <li className="hidden md:block">
+                    <Button variant="ghost" size="icon" className="flex flex-col items-center">
+                      <Users className="h-6 w-6" />
+                      <span className="text-xs mt-1">Network</span>
+                    </Button>
+                  </li>
+                  <li className="hidden md:block">
+                    <Button variant="ghost" size="icon" className="flex flex-col items-center">
+                      <Grid2X2 className="h-6 w-6" />
+                      <span className="text-xs mt-1">Jobs</span>
+                    </Button>
+                  </li>
+                  <li>
+                    <Button variant="ghost" size="icon" className="flex flex-col items-center">
+                      <MessageSquare className="h-6 w-6" />
+                      <span className="text-xs mt-1">Messages</span>
+                    </Button>
+                  </li>
+                  <li>
+                    <Button variant="ghost" size="icon" className="flex flex-col items-center relative">
+                      <BellIcon className="h-6 w-6" />
+                      <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                      <span className="text-xs mt-1">Notices</span>
+                    </Button>
+                  </li>
+                  <li>
+                    <Button variant="ghost" size="icon" className="flex flex-col items-center">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                      <span className="text-xs mt-1">You</span>
+                    </Button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link to="/login">
+                      <Button variant="ghost" className="flex items-center">
+                        <LogIn className="mr-2 h-4 w-4" />
+                        Sign In
+                      </Button>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/register">
+                      <Button className="flex items-center">
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        Join Now
+                      </Button>
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </nav>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-12 gap-4">
-        {/* Left Sidebar - Profile */}
         <aside className="md:col-span-3">
           <ProfileCard />
         </aside>
 
-        {/* Middle - Feed */}
         <section className="md:col-span-6 space-y-4">
-          {/* Post Creation Box */}
           <div className="bg-white rounded-lg shadow p-4">
             <div className="flex gap-3">
               <Avatar className="h-10 w-10">
@@ -105,7 +124,6 @@ const Index = () => {
 
           <Separator className="my-4" />
 
-          {/* Feed Posts */}
           <FeedPost 
             author="Jane Smith"
             authorRole="Senior Developer at Tech Company"
@@ -135,7 +153,6 @@ const Index = () => {
           />
         </section>
 
-        {/* Right Sidebar - Network/News */}
         <aside className="md:col-span-3 space-y-4">
           <NetworkCard />
         </aside>
